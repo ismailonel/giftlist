@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GiftList
 
-## Getting Started
+Bebek hediye listesi. Sitede üyelik ve ödeme yok: hediye eden kişi bir bolsa de regalo oluşturur, mesaj bırakır ve toplam tutarı e-postadaki hesaba gönderir.
 
-First, run the development server:
+`DATABASE_URL` yokken veriler bu bilgisayarda `.data/store.json` dosyasında durur. Vercel'de kalıcı olması için Neon Postgres gerekir.
+
+## Yerelde
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`ADMIN_PASSWORD` tanımlı değilse geliştirme anahtarı `regalos`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. [Neon](https://neon.tech) bağlantı adresini `DATABASE_URL` olarak ekle.
+2. `ADMIN_PASSWORD` ve uzun bir `SESSION_SECRET` tanımla.
+3. [Resend](https://resend.com) için `RESEND_API_KEY` ve `EMAIL_FROM`.
+4. Fotoğraflar için bir Blob deposu açıp `BLOB_READ_WRITE_TOKEN` ekle.
+5. Ajustes ekranından bildirim e-postasını, banka bilgilerini ve şablonları doldur.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tablolar ilk açılışta oluşur. İstersen `npm run db:push` ile Drizzle şemasını da eşitleyebilirsin.
