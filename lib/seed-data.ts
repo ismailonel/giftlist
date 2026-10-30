@@ -40,6 +40,8 @@ Referencia: {{codigo}}
 
 Mensaje:
 {{mensaje}}`,
+  thanksMessage:
+    "apartamos tu selección. Aquí están los datos para la transferencia.",
 });
 
 const categories: Category[] = [

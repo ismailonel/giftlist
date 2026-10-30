@@ -136,10 +136,10 @@ export function Registry({
                     ) : (
                       <button
                         type="button"
-                        className="mt-2 max-w-36 text-[11px] leading-snug tracking-wide text-[#6f675f] underline-offset-4 hover:underline"
+                        className="mt-2 max-w-36 rounded-full bg-[#3f3a34] px-4 py-2 text-[11px] leading-snug tracking-wide text-[#f7f3ec] transition-opacity hover:opacity-85"
                         onClick={() => add(product)}
                       >
-                        Agregar a la bolsa de regalo
+                        Agregar
                       </button>
                     )}
                   </article>

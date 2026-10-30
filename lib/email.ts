@@ -18,7 +18,7 @@ export function emailVars(order: Order, settings: Settings) {
 
   return {
     nombre: order.guestName,
-    correo: order.guestEmail,
+    correo: order.guestEmail || "(sin correo)",
     items,
     total: formatMoney(order.totalCents, settings.currency),
     mensaje: order.message.trim() || "(sin mensaje)",
@@ -59,16 +59,20 @@ export async function deliverEmails(order: Order, settings: Settings) {
 
   const resend = new Resend(apiKey);
 
-  try {
-    await resend.emails.send({
-      from,
-      to: order.guestEmail,
-      subject: messages.guest.subject,
-      text: messages.guest.text,
-    });
-    guestEmailSent = true;
-  } catch (error) {
-    notes.push(`No se envió el correo a quien regala: ${messageOf(error)}`);
+  if (!order.guestEmail.trim()) {
+    notes.push("El regalo no indicó correo; no se envió el correo a quien regala.");
+  } else {
+    try {
+      await resend.emails.send({
+        from,
+        to: order.guestEmail,
+        subject: messages.guest.subject,
+        text: messages.guest.text,
+      });
+      guestEmailSent = true;
+    } catch (error) {
+      notes.push(`No se envió el correo a quien regala: ${messageOf(error)}`);
+    }
   }
 
   if (!settings.notifyEmail.trim()) {

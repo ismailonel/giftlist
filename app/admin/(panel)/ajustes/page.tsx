@@ -42,6 +42,10 @@ export default async function SettingsPage({
         <Area name="guestTemplate" label="Para quien regala" defaultValue={settings.guestTemplate} rows={12} />
         <Area name="ownerTemplate" label="Aviso para ustedes" defaultValue={settings.ownerTemplate} rows={10} />
       </section>
+      <section className="space-y-4 rounded-2xl border border-[#e4dcd0] p-4">
+        <h2 className="font-serif text-2xl">Página de agradecimiento</h2>
+        <Field name="thanksMessage" label="Mensaje (después del nombre)" defaultValue={settings.thanksMessage} />
+      </section>
       <button className="rounded-full bg-[#3f3a34] px-5 py-2 text-sm text-[#f7f3ec]">Guardar</button>
     </form>
   );

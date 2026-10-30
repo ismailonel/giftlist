@@ -20,7 +20,8 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
         <p className="text-[11px] tracking-[0.22em] uppercase">{order.code}</p>
         <h1 className="font-serif text-4xl">{order.guestName}</h1>
         <p className="text-sm text-[#6f675f]">
-          {order.guestEmail} · {formatWhen(order.createdAt)}
+          {order.guestEmail ? `${order.guestEmail} · ` : ""}
+          {formatWhen(order.createdAt)}
         </p>
       </div>
       <ul className="space-y-1 text-sm">

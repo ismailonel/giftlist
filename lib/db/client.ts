@@ -63,8 +63,10 @@ async function createTables(sql: ReturnType<typeof postgres>) {
       account_number text NOT NULL,
       bank_note text NOT NULL,
       guest_template text NOT NULL,
-      owner_template text NOT NULL
+      owner_template text NOT NULL,
+      thanks_message text NOT NULL
     )`;
+  await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS thanks_message text NOT NULL DEFAULT ''`;
   await sql`
     CREATE TABLE IF NOT EXISTS categories (
       id text PRIMARY KEY,

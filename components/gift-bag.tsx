@@ -45,7 +45,7 @@ export function GiftBag({
     try {
       const result = await confirmGifts({
         name: String(formData.get("name") ?? ""),
-        email: String(formData.get("email") ?? ""),
+        email: "",
         message: String(formData.get("message") ?? ""),
         website: String(formData.get("website") ?? ""),
         items: lines.map((line) => ({ productId: line.id, quantity: line.quantity })),
@@ -75,14 +75,14 @@ export function GiftBag({
             Cerrar
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-2">
           {lines.length === 0 ? (
             <p className="text-sm text-[#6f675f]">Tu bolsa está vacía.</p>
           ) : (
-            <ul className="space-y-4">
+            <ul className="space-y-2">
               {lines.map((line) => (
                 <li key={line.id} className="flex gap-3">
-                  <div className="h-16 w-16 shrink-0">
+                  <div className="h-12 w-12 shrink-0">
                     <ProductVisual src={line.imageUrl} name="" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -111,10 +111,16 @@ export function GiftBag({
           )}
         </div>
         {lines.length > 0 ? (
-          <form action={onSubmit} className="space-y-3 border-t border-[#e4dcd0] px-5 py-4">
+          <form action={onSubmit} className="space-y-2.5 border-t border-[#e4dcd0] px-5 py-3">
             <div className="flex items-baseline justify-between">
               <span className="text-[11px] tracking-[0.22em] uppercase">Total</span>
               <span className="font-serif text-2xl">{formatMoney(total, currency)}</span>
+            </div>
+            <div className="rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-4 py-2 text-sm leading-snug">
+              <p className="text-[11px] tracking-[0.22em] uppercase text-[#6f675f]">Datos para la transferencia</p>
+              <p className="mt-2">STEPHANIE ARIAS GOMEZ</p>
+              <p>Número de cuenta BAC Honduras: 746395201</p>
+              <p>Número de cuenta Bancolombia: 55171691884</p>
             </div>
             <label className="block text-sm">
               Nombre
@@ -126,32 +132,22 @@ export function GiftBag({
               />
             </label>
             <label className="block text-sm">
-              Correo electrónico
-              <input
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                className="mt-1 w-full rounded-xl border border-[#e4dcd0] bg-white/70 px-3 py-2"
-              />
-            </label>
-            <label className="block text-sm">
               Un mensaje para nosotros
               <textarea
                 name="message"
-                rows={3}
+                rows={2}
                 className="mt-1 w-full rounded-xl border border-[#e4dcd0] bg-white/70 px-3 py-2"
               />
             </label>
             <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
             {error ? <p className="text-sm text-[#8a4b3a]">{error}</p> : null}
             <p className="text-xs leading-relaxed text-[#6f675f]">
-              No hay pago en el sitio. Te enviaremos los datos para la transferencia.
+              No hay pago en el sitio. Envía la transferencia a la cuenta indicada y guarda tu código de referencia.
             </p>
             <button
               type="submit"
               disabled={pending}
-              className="w-full rounded-full bg-[#3f3a34] px-4 py-3 text-sm tracking-wide text-[#f7f3ec] disabled:opacity-60"
+              className="w-full rounded-full bg-[#3f3a34] px-4 py-2.5 text-sm tracking-wide text-[#f7f3ec] disabled:opacity-60"
             >
               {pending ? "Enviando…" : "Confirmar regalos"}
             </button>

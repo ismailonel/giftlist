@@ -22,6 +22,7 @@ export const settings = pgTable("settings", {
   bankNote: text("bank_note").notNull(),
   guestTemplate: text("guest_template").notNull(),
   ownerTemplate: text("owner_template").notNull(),
+  thanksMessage: text("thanks_message").notNull(),
 });
 
 export const categories = pgTable("categories", {

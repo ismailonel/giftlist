@@ -50,6 +50,7 @@ export type Settings = {
   bankNote: string;
   guestTemplate: string;
   ownerTemplate: string;
+  thanksMessage: string;
 };
 
 export type OrderStatus = "pendiente" | "recibido";

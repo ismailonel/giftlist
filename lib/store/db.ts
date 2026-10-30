@@ -273,6 +273,7 @@ function settingsRow(value: Settings) {
     bankNote: value.bankNote,
     guestTemplate: value.guestTemplate,
     ownerTemplate: value.ownerTemplate,
+    thanksMessage: value.thanksMessage,
   };
 }
 
@@ -292,6 +293,7 @@ function settingsFrom(row: typeof settings.$inferSelect): Settings {
     bankNote: row.bankNote,
     guestTemplate: row.guestTemplate,
     ownerTemplate: row.ownerTemplate,
+    thanksMessage: row.thanksMessage || "",
   };
 }
 

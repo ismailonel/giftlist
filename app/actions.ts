@@ -27,7 +27,7 @@ import type { OrderStatus, Settings, Span } from "@/lib/types";
 
 const confirmSchema = z.object({
   name: z.string().trim().min(2, "Escribe tu nombre.").max(80),
-  email: z.string().trim().email("Escribe un correo válido.").max(160),
+  email: z.union([z.literal(""), z.string().trim().email("Escribe un correo válido.").max(160)]),
   message: z.string().trim().max(2000),
   website: z.string().max(0),
   items: z
@@ -203,6 +203,7 @@ const settingsSchema = z.object({
   bankNote: z.string().trim().max(500),
   guestTemplate: z.string().trim().min(10).max(4000),
   ownerTemplate: z.string().trim().min(10).max(4000),
+  thanksMessage: z.string().trim().max(300),
 });
 
 export async function saveSettingsAction(formData: FormData) {
@@ -222,6 +223,7 @@ export async function saveSettingsAction(formData: FormData) {
     bankNote: formData.get("bankNote"),
     guestTemplate: formData.get("guestTemplate"),
     ownerTemplate: formData.get("ownerTemplate"),
+    thanksMessage: formData.get("thanksMessage"),
   });
   if (!parsed.success) redirect("/admin/ajustes?error=1");
   const settings: Settings = parsed.data;
