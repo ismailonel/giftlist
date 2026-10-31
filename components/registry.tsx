@@ -89,22 +89,16 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
 
   return (
     <>
-      <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 px-4 md:grid-cols-6">
+      <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 px-4">
         {catalog.map((category) => (
           <section
             key={category.id}
-            className={`rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee]/80 p-4 sm:p-5 ${spanClass(category.span)}`}
+            className="rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee]/80 p-4 sm:p-5"
           >
             <h2 className="mb-5 text-[11px] tracking-[0.28em] text-[#6f675f] uppercase">
               {category.name}
             </h2>
-            <div
-              className={
-                category.span === "full"
-                  ? "grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-6"
-                  : "grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3"
-              }
-            >
+            <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">
               {category.products.map((product) => {
                 const line = lines.find((item) => item.id === product.id);
                 return (
@@ -192,10 +186,4 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
       {lightbox ? <ImageLightbox src={lightbox.src} name={lightbox.name} onClose={() => setLightbox(null)} /> : null}
     </>
   );
-}
-
-function spanClass(span: CatalogCategory["span"]) {
-  if (span === "half") return "md:col-span-3";
-  if (span === "third") return "md:col-span-2";
-  return "md:col-span-6";
 }
