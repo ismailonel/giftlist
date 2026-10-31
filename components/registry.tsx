@@ -140,7 +140,7 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
                       <div className="mt-auto w-full pt-2">
                         <button
                           type="button"
-                          className="mx-auto block w-full rounded-full bg-[#3f3a34] px-4 py-2 text-[11px] leading-snug tracking-wide text-[#f7f3ec] transition-opacity hover:opacity-85"
+                          className="mx-auto block w-fit rounded-full bg-[#3f3a34] px-2 py-0.5 text-[9px] leading-none font-[150] tracking-wide text-[#f7f3ec] transition-opacity hover:opacity-85"
                           onClick={() => add(product)}
                         >
                           Agregar
