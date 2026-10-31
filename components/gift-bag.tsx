@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { confirmGifts } from "@/app/actions";
-import { formatMoney } from "@/lib/format";
+import { formatQuote, type DisplayCurrency } from "@/lib/format";
 import { ProductVisual } from "./product-visual";
 
 export type BagLine = {
@@ -19,6 +19,8 @@ export function GiftBag({
   open,
   lines,
   currency,
+  copPerUsd,
+  hnlPerUsd,
   onClose,
   onQuantity,
   onClear,
@@ -26,7 +28,9 @@ export function GiftBag({
 }: {
   open: boolean;
   lines: BagLine[];
-  currency: string;
+  currency: DisplayCurrency;
+  copPerUsd: number;
+  hnlPerUsd: number;
   onClose: () => void;
   onQuantity: (id: string, quantity: number) => void;
   onClear: () => void;
@@ -88,7 +92,7 @@ export function GiftBag({
                   <div className="min-w-0 flex-1">
                     <p className="text-sm">{line.name}</p>
                     <p className="text-xs text-[#8a8178]">
-                      {formatMoney(line.priceCents, currency)}
+                      {formatQuote(line.priceCents, currency, copPerUsd, hnlPerUsd)}
                     </p>
                     <div className="mt-2 flex items-center gap-3 text-sm">
                       <button type="button" aria-label="Quitar uno" onClick={() => onQuantity(line.id, line.quantity - 1)}>
@@ -114,7 +118,7 @@ export function GiftBag({
           <form action={onSubmit} className="space-y-2.5 border-t border-[#e4dcd0] px-5 py-3">
             <div className="flex items-baseline justify-between">
               <span className="text-[11px] tracking-[0.22em] uppercase">Total</span>
-              <span className="font-serif text-2xl">{formatMoney(total, currency)}</span>
+              <span className="font-serif text-2xl">{formatQuote(total, currency, copPerUsd, hnlPerUsd)}</span>
             </div>
             <div className="rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-4 py-2 text-sm leading-snug">
               <p className="text-[11px] tracking-[0.22em] uppercase text-[#6f675f]">Datos para la transferencia</p>

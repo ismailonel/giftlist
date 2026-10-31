@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { and, asc, desc, eq, gte, sql } from "drizzle-orm";
 import { makeCode } from "../codes";
+import { rateOr } from "../format";
 import { mergeQuantities } from "../catalog";
 import { ensureDatabase, getDb } from "../db/client";
 import { categories, orderItems, orders, products, settings } from "../db/schema";
@@ -282,6 +283,8 @@ function settingsRow(value: Settings) {
     scriptNote: value.scriptNote,
     footerLine: value.footerLine,
     currency: value.currency,
+    copPerUsd: String(value.copPerUsd),
+    hnlPerUsd: String(value.hnlPerUsd),
     notifyEmail: value.notifyEmail,
     bankName: value.bankName,
     accountHolder: value.accountHolder,
@@ -302,6 +305,8 @@ function settingsFrom(row: typeof settings.$inferSelect): Settings {
     scriptNote: row.scriptNote,
     footerLine: row.footerLine,
     currency: row.currency,
+    copPerUsd: rateOr(row.copPerUsd, 4000),
+    hnlPerUsd: rateOr(row.hnlPerUsd, 26),
     notifyEmail: row.notifyEmail,
     bankName: row.bankName,
     accountHolder: row.accountHolder,

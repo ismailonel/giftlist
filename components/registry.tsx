@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { formatMoney } from "@/lib/format";
+import { formatQuote, type DisplayCurrency } from "@/lib/format";
 import type { CatalogCategory, PublicProduct } from "@/lib/types";
 import { GiftBag, type BagLine } from "./gift-bag";
 import { ProductVisual } from "./product-visual";
@@ -45,9 +45,13 @@ function subscribeBag(onStoreChange: () => void) {
 export function Registry({
   catalog,
   currency,
+  copPerUsd,
+  hnlPerUsd,
 }: {
   catalog: CatalogCategory[];
-  currency: string;
+  currency: DisplayCurrency;
+  copPerUsd: number;
+  hnlPerUsd: number;
 }) {
   const lines = useSyncExternalStore(subscribeBag, getBag, () => emptyBag);
   const [open, setOpen] = useState(false);
@@ -116,7 +120,7 @@ export function Registry({
                     </div>
                     <h3 className="mt-2 text-[13px] leading-tight">{product.name}</h3>
                     <p className="mt-1 text-xs text-[#8a8178]">
-                      {formatMoney(product.priceCents, currency)}
+                      {formatQuote(product.priceCents, currency, copPerUsd, hnlPerUsd)}
                     </p>
                     {line ? (
                       <div className="mt-2 flex items-center gap-3 text-sm">
@@ -160,7 +164,7 @@ export function Registry({
             <div>
               <p className="text-[11px] tracking-[0.22em] uppercase">Tu bolsa</p>
               <p className="text-sm text-[#6f675f]">
-                {count} {count === 1 ? "regalo" : "regalos"} · {formatMoney(total, currency)}
+                {count} {count === 1 ? "regalo" : "regalos"} · {formatQuote(total, currency, copPerUsd, hnlPerUsd)}
               </p>
             </div>
             <button
@@ -177,6 +181,8 @@ export function Registry({
         open={open}
         lines={lines}
         currency={currency}
+        copPerUsd={copPerUsd}
+        hnlPerUsd={hnlPerUsd}
         onClose={() => setOpen(false)}
         onQuantity={setQuantity}
         onClear={() => {

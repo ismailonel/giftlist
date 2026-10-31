@@ -43,6 +43,8 @@ export type Settings = {
   scriptNote: string;
   footerLine: string;
   currency: string;
+  copPerUsd: number;
+  hnlPerUsd: number;
   notifyEmail: string;
   bankName: string;
   accountHolder: string;

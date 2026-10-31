@@ -27,11 +27,11 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
       <ul className="space-y-1 text-sm">
         {order.items.map((item) => (
           <li key={item.id}>
-            {item.quantity} × {item.name} — {formatMoney(item.priceCents * item.quantity, settings.currency)}
+            {item.quantity} × {item.name} — {formatMoney(item.priceCents * item.quantity, "USD")}
           </li>
         ))}
       </ul>
-      <p className="font-serif text-3xl">{formatMoney(order.totalCents, settings.currency)}</p>
+      <p className="font-serif text-3xl">{formatMoney(order.totalCents, "USD")}</p>
       <section className="rounded-2xl border border-[#e4dcd0] p-4">
         <h2 className="text-[11px] tracking-[0.22em] uppercase">Mensaje</h2>
         <p className="mt-2 text-sm whitespace-pre-wrap">{order.message || "(sin mensaje)"}</p>

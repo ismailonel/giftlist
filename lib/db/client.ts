@@ -62,6 +62,8 @@ async function createTables(sql: ReturnType<typeof postgres>) {
       script_note text NOT NULL,
       footer_line text NOT NULL,
       currency text NOT NULL,
+      cop_per_usd text NOT NULL,
+      hnl_per_usd text NOT NULL,
       notify_email text NOT NULL,
       bank_name text NOT NULL,
       account_holder text NOT NULL,
@@ -72,6 +74,8 @@ async function createTables(sql: ReturnType<typeof postgres>) {
       thanks_message text NOT NULL
     )`;
   await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS thanks_message text NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS cop_per_usd text NOT NULL DEFAULT '4000'`;
+  await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS hnl_per_usd text NOT NULL DEFAULT '26'`;
   await sql`
     CREATE TABLE IF NOT EXISTS categories (
       id text PRIMARY KEY,

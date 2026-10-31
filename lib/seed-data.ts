@@ -8,6 +8,8 @@ export const defaultSettings = (): Settings => ({
   scriptNote: "Empieza simple,\nsuma solo lo necesario",
   footerLine: "Un comienzo más tranquilo para su casa",
   currency: "USD",
+  copPerUsd: 4000,
+  hnlPerUsd: 26,
   notifyEmail: "",
   bankName: "",
   accountHolder: "",

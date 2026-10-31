@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { mergeQuantities, spanOf } from "../catalog";
 import { makeCode } from "../codes";
+import { rateOr } from "../format";
 import { getSupabase } from "../db/supabase";
 import { initialData } from "../seed-data";
 import type { Category, Order, OrderStatus, Product, Settings, StoreData } from "../types";
@@ -50,7 +51,9 @@ function settingsFrom(row: Row): Settings {
     subtitle: text(row, "subtitle"),
     scriptNote: text(row, "script_note"),
     footerLine: text(row, "footer_line"),
-    currency: text(row, "currency"),
+    currency: text(row, "currency") || "USD",
+    copPerUsd: rateOr(row.cop_per_usd, 4000),
+    hnlPerUsd: rateOr(row.hnl_per_usd, 26),
     notifyEmail: text(row, "notify_email"),
     bankName: text(row, "bank_name"),
     accountHolder: text(row, "account_holder"),
@@ -72,6 +75,8 @@ function settingsToDb(value: Settings) {
     script_note: value.scriptNote,
     footer_line: value.footerLine,
     currency: value.currency,
+    cop_per_usd: String(value.copPerUsd),
+    hnl_per_usd: String(value.hnlPerUsd),
     notify_email: value.notifyEmail,
     bank_name: value.bankName,
     account_holder: value.accountHolder,

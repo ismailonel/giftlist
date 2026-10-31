@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { mkdir, readFile, rename, rm, writeFile } from "fs/promises";
 import path from "path";
 import { makeCode } from "../codes";
+import { rateOr } from "../format";
 import { mergeQuantities } from "../catalog";
 import { initialData } from "../seed-data";
 import type {
@@ -29,7 +30,13 @@ function locked<T>(task: () => Promise<T>) {
 
 async function readData() {
   try {
-    return JSON.parse(await readFile(filePath, "utf8")) as StoreData;
+    const data = JSON.parse(await readFile(filePath, "utf8")) as StoreData;
+    data.settings = {
+      ...data.settings,
+      copPerUsd: rateOr(data.settings.copPerUsd, 4000),
+      hnlPerUsd: rateOr(data.settings.hnlPerUsd, 26),
+    };
+    return data;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     const data = initialData();

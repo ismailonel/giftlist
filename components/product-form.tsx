@@ -129,7 +129,7 @@ export function ProductForm({
         </label>
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="text-sm">
-            Precio
+            Precio (USD)
             <input required inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value)} className={fieldClass} />
           </label>
           <label className="text-sm">

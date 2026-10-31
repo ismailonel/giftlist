@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { formatMoney, formatWhen } from "@/lib/format";
-import { getSettings, listOrders } from "@/lib/store";
+import { listOrders } from "@/lib/store";
 
 export const instant = false;
 
 export default async function GiftsPage() {
   await requireAdmin();
-  const [orders, settings] = await Promise.all([listOrders(), getSettings()]);
+  const orders = await listOrders();
 
   return (
     <div>
@@ -21,7 +21,7 @@ export default async function GiftsPage() {
               <Link href={`/admin/regalos/${order.id}`} className="block px-4 py-3">
                 <span className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="text-sm">{order.guestName}</span>
-                  <span className="font-serif text-xl">{formatMoney(order.totalCents, settings.currency)}</span>
+                  <span className="font-serif text-xl">{formatMoney(order.totalCents, "USD")}</span>
                 </span>
                 <span className="mt-1 block text-xs text-[#8a8178]">
                   {formatWhen(order.createdAt)} · {order.status === "recibido" ? "Recibido" : "Pendiente"} · {order.code}

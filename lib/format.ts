@@ -1,3 +1,42 @@
+export type DisplayCurrency = "COP" | "HNL";
+
+export function displayCurrency(value: string | undefined): DisplayCurrency {
+  return value === "HNL" ? "HNL" : "COP";
+}
+
+export function formatQuote(
+  cents: number,
+  currency: DisplayCurrency,
+  copPerUsd: number,
+  hnlPerUsd: number,
+) {
+  const rate = currency === "HNL" ? hnlPerUsd : copPerUsd;
+  const amount = (cents / 100) * rate;
+  return new Intl.NumberFormat(currency === "HNL" ? "es-HN" : "es-CO", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: currency === "COP" ? 0 : 2,
+    maximumFractionDigits: currency === "COP" ? 0 : 2,
+  }).format(amount);
+}
+
+export function parseTurkishRate(value: string) {
+  const trimmed = value.trim().replace(/\s/g, "");
+  if (!/^\d{1,3}(\.\d{3})*(,\d{1,4})?$|^\d+(,\d{1,4})?$/.test(trimmed)) return null;
+  const amount = Number(trimmed.replace(/\./g, "").replace(",", "."));
+  if (!Number.isFinite(amount) || amount <= 0) return null;
+  return amount;
+}
+
+export function rateOr(value: unknown, fallback: number) {
+  const amount = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(amount) && amount > 0 ? amount : fallback;
+}
+
+export function formatTurkishRate(value: number) {
+  return new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 4 }).format(value);
+}
+
 export function formatMoney(cents: number, currency: string) {
   const code = /^[A-Z]{3}$/.test(currency) ? currency : "USD";
   try {

@@ -15,6 +15,8 @@ export const settings = pgTable("settings", {
   scriptNote: text("script_note").notNull(),
   footerLine: text("footer_line").notNull(),
   currency: text("currency").notNull(),
+  copPerUsd: text("cop_per_usd").notNull(),
+  hnlPerUsd: text("hnl_per_usd").notNull(),
   notifyEmail: text("notify_email").notNull(),
   bankName: text("bank_name").notNull(),
   accountHolder: text("account_holder").notNull(),

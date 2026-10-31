@@ -1,11 +1,36 @@
+import { setDisplayCurrency } from "@/app/actions";
+import type { DisplayCurrency } from "@/lib/format";
 import type { Settings } from "@/lib/types";
 
-export function SiteHeader({ settings }: { settings: Settings }) {
+export function SiteHeader({
+  settings,
+  currency,
+}: {
+  settings: Settings;
+  currency: DisplayCurrency;
+}) {
   const [first, second] = monogramLetters(settings.monogram);
 
   return (
     <header className="relative mx-auto max-w-5xl px-5 pt-10 text-center sm:pt-14">
-      <p className="pointer-events-none absolute top-8 right-6 hidden max-w-40 rotate-[-8deg] text-left font-script text-[1.65rem] leading-tight whitespace-pre-line text-[#6f675f] sm:block">
+      <form action={setDisplayCurrency} className="absolute top-3 right-5 z-10 inline-flex rounded-full border border-[#e4dcd0] bg-[#f7f3ec]/90 p-0.5 text-[11px] tracking-[0.14em]">
+        {(["COP", "HNL"] as const).map((code) => (
+          <button
+            key={code}
+            name="moneda"
+            value={code}
+            aria-pressed={currency === code}
+            className={
+              currency === code
+                ? "rounded-full bg-[#3f3a34] px-3 py-1 text-[#f7f3ec]"
+                : "rounded-full px-3 py-1 text-[#6f675f]"
+            }
+          >
+            {code}
+          </button>
+        ))}
+      </form>
+      <p className="pointer-events-none absolute top-16 right-6 hidden max-w-40 rotate-[-8deg] text-left font-script text-[1.65rem] leading-tight whitespace-pre-line text-[#6f675f] sm:block">
         {settings.scriptNote}
       </p>
       <div className="relative mx-auto h-16 w-16 font-serif text-[2.6rem] leading-none text-[#2c2926]">

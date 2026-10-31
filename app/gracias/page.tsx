@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { formatMoney, formatWhen } from "@/lib/format";
+import { cookies } from "next/headers";
+import { displayCurrency, formatQuote, formatWhen } from "@/lib/format";
 import { getOrderByCode, getSettings } from "@/lib/store";
 
 export const instant = false;
@@ -11,10 +12,12 @@ export default async function ThanksPage({
 }) {
   const { codigo } = await searchParams;
   const code = codigo?.trim().toUpperCase() ?? "";
-  const [order, settings] = await Promise.all([
+  const [order, settings, jar] = await Promise.all([
     code ? getOrderByCode(code) : Promise.resolve(null),
     getSettings(),
+    cookies(),
   ]);
+  const currency = displayCurrency(jar.get("giftlist_moneda")?.value);
 
   return (
     <main className="mx-auto flex min-h-full max-w-xl flex-col justify-center px-5 py-16 text-center">
@@ -35,7 +38,9 @@ export default async function ThanksPage({
               </li>
             ))}
           </ul>
-          <p className="mt-4 font-serif text-3xl">{formatMoney(order.totalCents, settings.currency)}</p>
+          <p className="mt-4 font-serif text-3xl">
+            {formatQuote(order.totalCents, currency, settings.copPerUsd, settings.hnlPerUsd)}
+          </p>
           <section className="mt-8 rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-5 py-4 text-left text-sm leading-relaxed">
             <h2 className="text-[11px] tracking-[0.22em] uppercase">Datos para la transferencia</h2>
             <p className="mt-3">STEPHANIE ARIAS GOMEZ</p>

@@ -3,7 +3,7 @@ import { deleteCategoryAction, saveCategoryAction } from "@/app/actions";
 import { ProductVisual } from "@/components/product-visual";
 import { requireAdmin } from "@/lib/auth";
 import { formatMoney } from "@/lib/format";
-import { adminCatalog, getSettings } from "@/lib/store";
+import { adminCatalog } from "@/lib/store";
 
 export const instant = false;
 
@@ -14,7 +14,7 @@ export default async function ProductsPage({
 }) {
   await requireAdmin();
   const { error } = await searchParams;
-  const [data, settings] = await Promise.all([adminCatalog(), getSettings()]);
+  const data = await adminCatalog();
   const categories = data.categories.slice().sort((a, b) => a.sort - b.sort);
 
   return (
@@ -67,7 +67,7 @@ export default async function ProductsPage({
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm">{product.name}</span>
                       <span className="text-xs text-[#8a8178]">
-                        {formatMoney(product.priceCents, settings.currency)} · {product.stock}{" "}
+                        {formatMoney(product.priceCents, "USD")} · {product.stock}{" "}
                         {product.stock === 1 ? "disponible" : "disponibles"} ·{" "}
                         {product.published ? "Visible" : "Oculto"}
                       </span>

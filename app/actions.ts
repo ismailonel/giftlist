@@ -8,7 +8,7 @@ import { z } from "zod";
 import { adminPassword, passwordsMatch, requireAdmin } from "@/lib/auth";
 import { importAmazonProduct } from "@/lib/amazon";
 import { deliverEmails } from "@/lib/email";
-import { dollarsToCents } from "@/lib/format";
+import { displayCurrency, dollarsToCents, parseTurkishRate } from "@/lib/format";
 import { storeImage } from "@/lib/images";
 import { SESSION_COOKIE, sessionSecret, signAdminSession } from "@/lib/session";
 import {
@@ -68,7 +68,8 @@ export async function confirmGifts(input: {
   if (!result.ok) return result;
 
   const settings = await getSettings();
-  const delivery = await deliverEmails(result.order, settings);
+  const jar = await cookies();
+  const delivery = await deliverEmails(result.order, settings, displayCurrency(jar.get("giftlist_moneda")?.value));
   await markEmail(result.order.id, delivery);
   revalidatePath("/");
   revalidatePath("/gracias");
@@ -196,7 +197,9 @@ const settingsSchema = z.object({
   subtitle: z.string().trim().min(2).max(180),
   scriptNote: z.string().trim().max(180),
   footerLine: z.string().trim().max(180),
-  currency: z.string().trim().regex(/^[A-Z]{3}$/),
+  currency: z.literal("USD"),
+  copPerUsd: z.number().positive(),
+  hnlPerUsd: z.number().positive(),
   notifyEmail: z.union([z.literal(""), z.string().trim().email().max(160)]),
   bankName: z.string().trim().max(120),
   accountHolder: z.string().trim().max(120),
@@ -207,6 +210,14 @@ const settingsSchema = z.object({
   thanksMessage: z.string().trim().max(300),
 });
 
+export async function setDisplayCurrency(formData: FormData) {
+  const moneda = displayCurrency(String(formData.get("moneda") ?? ""));
+  const jar = await cookies();
+  jar.set("giftlist_moneda", moneda, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  revalidatePath("/");
+  revalidatePath("/gracias");
+}
+
 export async function saveSettingsAction(formData: FormData) {
   await requireAdmin();
   const parsed = settingsSchema.safeParse({
@@ -216,7 +227,9 @@ export async function saveSettingsAction(formData: FormData) {
     subtitle: formData.get("subtitle"),
     scriptNote: formData.get("scriptNote"),
     footerLine: formData.get("footerLine"),
-    currency: String(formData.get("currency") ?? "").toUpperCase(),
+    currency: "USD",
+    copPerUsd: parseTurkishRate(String(formData.get("copPerUsd") ?? "")),
+    hnlPerUsd: parseTurkishRate(String(formData.get("hnlPerUsd") ?? "")),
     notifyEmail: formData.get("notifyEmail"),
     bankName: formData.get("bankName"),
     accountHolder: formData.get("accountHolder"),

@@ -1,18 +1,18 @@
 import "server-only";
 
 import { Resend } from "resend";
-import { formatMoney } from "./format";
+import { formatQuote, type DisplayCurrency } from "./format";
 import type { Order, Settings } from "./types";
 
 export function renderTemplate(template: string, vars: Record<string, string>) {
   return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key: string) => vars[key] ?? "");
 }
 
-export function emailVars(order: Order, settings: Settings) {
+export function emailVars(order: Order, settings: Settings, currency: DisplayCurrency = "COP") {
   const items = order.items
     .map(
       (item) =>
-        `• ${item.quantity} × ${item.name} — ${formatMoney(item.priceCents * item.quantity, settings.currency)}`,
+        `• ${item.quantity} × ${item.name} — ${formatQuote(item.priceCents * item.quantity, currency, settings.copPerUsd, settings.hnlPerUsd)}`,
     )
     .join("\n");
 
@@ -20,7 +20,7 @@ export function emailVars(order: Order, settings: Settings) {
     nombre: order.guestName,
     correo: order.guestEmail || "(sin correo)",
     items,
-    total: formatMoney(order.totalCents, settings.currency),
+    total: formatQuote(order.totalCents, currency, settings.copPerUsd, settings.hnlPerUsd),
     mensaje: order.message.trim() || "(sin mensaje)",
     iban: settings.accountNumber || "(complétalo en Ajustes)",
     banco: settings.bankName || "(complétalo en Ajustes)",
@@ -30,8 +30,8 @@ export function emailVars(order: Order, settings: Settings) {
   };
 }
 
-export function buildEmails(order: Order, settings: Settings) {
-  const vars = emailVars(order, settings);
+export function buildEmails(order: Order, settings: Settings, currency: DisplayCurrency = "COP") {
+  const vars = emailVars(order, settings, currency);
   return {
     guest: {
       subject: "Gracias por tu regalo",
@@ -44,8 +44,8 @@ export function buildEmails(order: Order, settings: Settings) {
   };
 }
 
-export async function deliverEmails(order: Order, settings: Settings) {
-  const messages = buildEmails(order, settings);
+export async function deliverEmails(order: Order, settings: Settings, currency: DisplayCurrency = "COP") {
+  const messages = buildEmails(order, settings, currency);
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
   let guestEmailSent = false;

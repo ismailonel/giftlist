@@ -1,5 +1,6 @@
 import { saveSettingsAction } from "@/app/actions";
 import { requireAdmin } from "@/lib/auth";
+import { formatTurkishRate } from "@/lib/format";
 import { getSettings } from "@/lib/store";
 
 export const instant = false;
@@ -24,8 +25,15 @@ export default async function SettingsPage({
         <Field name="subtitle" label="Subtítulo" defaultValue={settings.subtitle} className="sm:col-span-2" />
         <Area name="scriptNote" label="Nota manuscrita" defaultValue={settings.scriptNote} />
         <Field name="footerLine" label="Línea del pie" defaultValue={settings.footerLine} />
-        <Field name="currency" label="Moneda (USD, MXN, EUR…)" defaultValue={settings.currency} />
         <Field name="notifyEmail" label="Correo de aviso" defaultValue={settings.notifyEmail} type="email" />
+      </section>
+      <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
+        <h2 className="font-serif text-2xl sm:col-span-2">Tipo de cambio</h2>
+        <p className="text-sm text-[#6f675f] sm:col-span-2">
+          Los regalos se cargan en USD. En la lista se ven en COP o HNL. Escribe los decimales con coma: 4.150,50
+        </p>
+        <Field name="copPerUsd" label="1 USD en COP" defaultValue={formatTurkishRate(settings.copPerUsd)} />
+        <Field name="hnlPerUsd" label="1 USD en HNL" defaultValue={formatTurkishRate(settings.hnlPerUsd)} />
       </section>
       <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
         <h2 className="font-serif text-2xl sm:col-span-2">Transferencia</h2>
