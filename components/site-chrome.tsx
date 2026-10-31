@@ -2,18 +2,19 @@ import { CurrencyPicker } from "@/components/currency-picker";
 import type { Settings } from "@/lib/types";
 
 export function SiteHeader({ settings }: { settings: Settings }) {
-  const [first, second] = monogramLetters(settings.monogram);
-
   return (
     <header className="relative mx-auto max-w-5xl px-5 pt-10 text-center sm:pt-14">
       <CurrencyPicker />
       <p className="pointer-events-none absolute top-16 right-6 hidden max-w-40 rotate-[-8deg] text-left font-script text-[1.65rem] leading-tight whitespace-pre-line text-[#6f675f] sm:block">
         {settings.scriptNote}
       </p>
-      <div className="relative mx-auto h-16 w-16 font-serif text-[2.6rem] leading-none text-[#2c2926]">
-        <span className="absolute top-0 left-0">{first}</span>
-        <span className="absolute right-0 bottom-0">{second}</span>
-      </div>
+      <img
+        src="/ismailadrian.png"
+        alt="Ismail Adrián"
+        width={160}
+        height={160}
+        className="mx-auto w-40 sm:w-44"
+      />
       <p className="mt-5 text-[11px] tracking-[0.42em] text-[#6f675f] uppercase">
         {settings.siteName}
       </p>
@@ -42,10 +43,4 @@ export function SiteFooter({ settings }: { settings: Settings }) {
       </p>
     </footer>
   );
-}
-
-function monogramLetters(value: string) {
-  const letters = value.replace(/\s+/g, "").toLocaleUpperCase("es");
-  const first = letters[0] || "L";
-  return [first, letters[1] || first] as const;
 }
