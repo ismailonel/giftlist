@@ -9,6 +9,7 @@ import { adminPassword, passwordsMatch, requireAdmin } from "@/lib/auth";
 import { importAmazonProduct } from "@/lib/amazon";
 import { dollarsToCents, parseTurkishRate } from "@/lib/format";
 import { storeImage } from "@/lib/images";
+import { notifyOwner } from "@/lib/notify";
 import { SESSION_COOKIE, sessionSecret, signAdminSession } from "@/lib/session";
 import {
   confirmSelection,
@@ -64,6 +65,9 @@ export async function confirmGifts(input: {
 
   if (!result.ok) return result;
 
+  // Aviso por correo a la lista (solo si hay notificación configurada).
+  const settings = await getSettings();
+  await notifyOwner(result.order, settings);
   revalidatePath("/");
   revalidatePath("/gracias");
   return { ok: true as const, code: result.order.code };
@@ -197,6 +201,7 @@ const settingsSchema = z.object({
   accountHolder: z.string().trim().max(120),
   accountNumber: z.string().trim().max(80),
   bankNote: z.string().trim().max(500),
+  notifyEmail: z.union([z.literal(""), z.string().trim().email("Escribe un correo válido.").max(160)]),
   thanksMessage: z.string().trim().max(300),
 });
 
@@ -216,15 +221,15 @@ export async function saveSettingsAction(formData: FormData) {
     accountHolder: formData.get("accountHolder"),
     accountNumber: formData.get("accountNumber"),
     bankNote: formData.get("bankNote"),
+    notifyEmail: formData.get("notifyEmail"),
     thanksMessage: formData.get("thanksMessage"),
   });
   if (!parsed.success) redirect("/admin/ajustes?error=1");
-  // Las columnas de correo siguen siendo NOT NULL en la base de datos,
+  // Las columnas de plantilla siguen siendo NOT NULL en la base de datos,
   // por lo que conservamos los valores actuales en lugar de escribirlos.
   const current = await getSettings();
   const settings: Settings = {
     ...parsed.data,
-    notifyEmail: current.notifyEmail,
     guestTemplate: current.guestTemplate,
     ownerTemplate: current.ownerTemplate,
   };

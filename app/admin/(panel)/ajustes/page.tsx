@@ -17,7 +17,7 @@ export default async function SettingsPage({
     <form action={saveSettingsAction} className="space-y-6">
       <h1 className="font-serif text-4xl">Ajustes</h1>
       {ok ? <p className="text-sm text-[#6f675f]">Guardado.</p> : null}
-      {error ? <p className="text-sm text-[#8a4b3a]">Revisa los campos.</p> : null}
+      {error ? <p className="text-sm text-[#8a4b3a]">Revisa los campos. El correo de aviso, si lo escribes, tiene que ser válido.</p> : null}
       <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
         <Field name="monogram" label="Monograma" defaultValue={settings.monogram} />
         <Field name="siteName" label="Nombre del sitio" defaultValue={settings.siteName} />
@@ -25,6 +25,7 @@ export default async function SettingsPage({
         <Field name="subtitle" label="Subtítulo" defaultValue={settings.subtitle} className="sm:col-span-2" />
         <Area name="scriptNote" label="Nota manuscrita" defaultValue={settings.scriptNote} />
         <Field name="footerLine" label="Línea del pie" defaultValue={settings.footerLine} />
+        <Field name="notifyEmail" label="Correo de aviso" defaultValue={settings.notifyEmail} type="email" />
       </section>
       <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
         <h2 className="font-serif text-2xl sm:col-span-2">Tipo de cambio</h2>
