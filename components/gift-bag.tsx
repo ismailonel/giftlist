@@ -138,7 +138,7 @@ export function GiftBag({
               <p className="text-[11px] tracking-[0.22em] uppercase text-[#6f675f]">Datos para la transferencia</p>
               <p className="pt-1 font-medium">Titular: STEPHANIE ARIAS GÓMEZ</p>
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 py-1">
-                <span>BAC Honduras <span className="text-xs text-[#8a8178]">(HNL / USD)</span></span>
+                <span>BAC Honduras <span className="text-xs text-[#8a8178]">(HNL)</span></span>
                 <CopyNumber value="746395201" label="BAC Honduras" />
               </div>
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-t border-[#e4dcd0] py-1">
