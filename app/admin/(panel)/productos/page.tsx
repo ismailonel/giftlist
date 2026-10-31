@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { deleteCategoryAction, saveCategoryAction } from "@/app/actions";
+import { DeleteProductButton } from "@/components/delete-product-button";
 import { ProductVisual } from "@/components/product-visual";
 import { requireAdmin } from "@/lib/auth";
 import { formatMoney } from "@/lib/format";
@@ -59,8 +60,8 @@ export default async function ProductsPage({
               .filter((product) => product.categoryId === category.id)
               .sort((a, b) => a.sort - b.sort)
               .map((product) => (
-                <li key={product.id}>
-                  <Link href={`/admin/productos/${product.id}`} className="flex items-center gap-3 py-3">
+                <li key={product.id} className="flex items-center gap-3 py-3">
+                  <Link href={`/admin/productos/${product.id}`} className="flex min-w-0 flex-1 items-center gap-3">
                     <span className="h-14 w-14 shrink-0">
                       <ProductVisual src={product.imageUrl} name="" />
                     </span>
@@ -73,6 +74,7 @@ export default async function ProductsPage({
                       </span>
                     </span>
                   </Link>
+                  <DeleteProductButton id={product.id} name={product.name} />
                 </li>
               ))}
           </ul>
