@@ -13,7 +13,7 @@ export function SiteHeader({ settings }: { settings: Settings }) {
         alt="Ismail Adrián"
         width={256}
         height={256}
-        className="mx-auto mt-4 w-64 sm:w-80"
+        className="mx-auto mt-4 w-56 sm:w-72"
       />
       <p className="mt-2 text-[11px] tracking-[0.42em] text-[#6f675f] uppercase">
         {settings.siteName}
