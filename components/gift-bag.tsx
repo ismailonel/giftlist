@@ -147,7 +147,7 @@ export function GiftBag({
               </div>
             </div>
             <label className="block text-sm">
-              Nombre
+              ¿Quién envía el regalo?
               <input
                 name="name"
                 required
