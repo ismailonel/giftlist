@@ -3,6 +3,7 @@
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { after } from "next/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { adminPassword, passwordsMatch, requireAdmin } from "@/lib/auth";
@@ -65,11 +66,14 @@ export async function confirmGifts(input: {
 
   if (!result.ok) return result;
 
-  // Aviso por correo a la lista (solo si hay notificación configurada).
-  const settings = await getSettings();
-  await notifyOwner(result.order, settings);
-  revalidatePath("/");
-  revalidatePath("/gracias");
+  // El aviso por correo se envía después de responder: la página de
+  // agradecimiento ni siquiera espera a leer los ajustes.
+  const order = result.order;
+  after(async () => {
+    const settings = await getSettings();
+    await notifyOwner(order, settings);
+  });
+  await Promise.all([revalidatePath("/"), revalidatePath("/gracias")]);
   return { ok: true as const, code: result.order.code };
 }
 

@@ -192,9 +192,15 @@ async function returnStock(
   throw new Error("products: no se pudo devolver el stock");
 }
 
+let seedChecked = false;
 async function ready() {
   const supabase = client();
-  await seedIfEmpty(supabase);
+  // La semilla solo se necesita si la base está vacía; se comprueba una vez
+  // por proceso caliente en vez de en cada operación.
+  if (!seedChecked) {
+    await seedIfEmpty(supabase);
+    seedChecked = true;
+  }
   return supabase;
 }
 
@@ -312,21 +318,29 @@ export const supabaseStore = {
       }
       if (unavailable.length > 0) throw new StockConflict(unavailable);
 
+      // Cada regalo se actualiza de forma independiente: en paralelo.
+      const results = await Promise.all(
+        chosen.map(async (line) => {
+          const nextStock = line.product.stock - line.quantity;
+          const updated = await supabase
+            .from("products")
+            .update({ stock: nextStock })
+            .eq("id", line.product.id)
+            .eq("stock", line.product.stock)
+            .select("id");
+          return { line, updated };
+        }),
+      );
       const reserved: { id: string; stock: number }[] = [];
-      for (const line of chosen) {
-        const nextStock = line.product.stock - line.quantity;
-        const updated = await supabase
-          .from("products")
-          .update({ stock: nextStock })
-          .eq("id", line.product.id)
-          .eq("stock", line.product.stock)
-          .select("id");
+      const failed = results.find(({ updated }) => (updated.data ?? []).length === 0);
+      for (const { line, updated } of results) {
         raise(updated.error, "products");
-        if ((updated.data ?? []).length === 0) {
-          await restoreStock(supabase, reserved);
-          throw new StockConflict([{ id: line.product.id, name: line.product.name }]);
-        }
-        reserved.push({ id: line.product.id, stock: line.product.stock });
+        if ((updated.data ?? []).length > 0) reserved.push({ id: line.product.id, stock: line.product.stock });
+      }
+      if (failed) {
+        // Las descargas corrieron en paralelo: se restauran las que sí llegaron.
+        await restoreStock(supabase, reserved);
+        throw new StockConflict([{ id: failed.line.product.id, name: failed.line.product.name }]);
       }
 
       let code = makeCode();
