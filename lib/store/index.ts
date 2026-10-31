@@ -2,12 +2,15 @@ import "server-only";
 
 import { toCatalog } from "../catalog";
 import { hasDatabase } from "../db/client";
+import { hasSupabase } from "../db/supabase";
 import { initialData } from "../seed-data";
 import type { Category, OrderStatus, Product, Settings } from "../types";
 import { dbStore } from "./db";
 import { fileStore } from "./file";
+import { supabaseStore } from "./supabase";
 
 function backend() {
+  if (hasSupabase()) return supabaseStore;
   if (hasDatabase()) return dbStore;
   if (process.env.VERCEL) return null;
   return fileStore;
