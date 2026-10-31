@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { resendGiftEmails, setGiftStatus } from "@/app/actions";
+import { releaseGift, resendGiftEmails, setGiftStatus } from "@/app/actions";
 import { requireAdmin } from "@/lib/auth";
 import { buildEmails } from "@/lib/email";
 import { formatMoney, formatWhen } from "@/lib/format";
@@ -51,6 +51,15 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
       <p className="text-xs text-[#8a8178]">
         Correo a quien regala: {order.guestEmailSent ? "enviado" : "pendiente"}. Aviso: {order.ownerEmailSent ? "enviado" : "pendiente"}.
       </p>
+      <form action={releaseGift}>
+        <input type="hidden" name="id" value={order.id} />
+        <button className="rounded-full border border-[#8a4b3a] px-4 py-2 text-sm text-[#8a4b3a]">
+          Devolver a la lista
+        </button>
+        <p className="mt-2 text-xs text-[#8a8178]">
+          El stock de estos regalos vuelve a la lista y esta reserva se elimina.
+        </p>
+      </form>
       <form action={resendGiftEmails}>
         <input type="hidden" name="id" value={order.id} />
         <button className="rounded-full bg-[#3f3a34] px-4 py-2 text-sm text-[#f7f3ec]">Reenviar correos</button>

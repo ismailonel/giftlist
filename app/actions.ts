@@ -21,6 +21,7 @@ import {
   saveCategory,
   saveProduct,
   saveSettings,
+  releaseOrder,
   setOrderStatus,
 } from "@/lib/store";
 import type { OrderStatus, Settings, Span } from "@/lib/types";
@@ -231,6 +232,17 @@ export async function saveSettingsAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin/ajustes");
   redirect("/admin/ajustes?ok=1");
+}
+
+export async function releaseGift(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/admin/regalos");
+  await releaseOrder(id);
+  revalidatePath("/");
+  revalidatePath("/admin/regalos");
+  revalidatePath("/admin/productos");
+  redirect("/admin/regalos");
 }
 
 export async function setGiftStatus(formData: FormData) {

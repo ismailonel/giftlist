@@ -76,6 +76,13 @@ export default async function ProductsPage({
                 </li>
               ))}
           </ul>
+          <Link
+            href={`/admin/productos/nuevo?categoria=${category.id}`}
+            className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-dashed border-[#cfc6ba] py-3 text-sm text-[#6f675f]"
+          >
+            <span aria-hidden="true">+</span>
+            Agregar regalo
+          </Link>
         </section>
       ))}
       <form action={saveCategoryAction} className="rounded-2xl border border-dashed border-[#e4dcd0] p-4">

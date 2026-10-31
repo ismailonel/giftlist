@@ -240,6 +240,22 @@ export const dbStore = {
     const database = await db();
     await database.update(orders).set({ status }).where(eq(orders.id, id));
   },
+  async releaseOrder(id: string) {
+    const database = await db();
+    await database.transaction(async (tx) => {
+      const [order] = await tx.select({ id: orders.id }).from(orders).where(eq(orders.id, id)).for("update").limit(1);
+      if (!order) return;
+      const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, id));
+      for (const item of items) {
+        await tx
+          .update(products)
+          .set({ stock: sql`${products.stock} + ${item.quantity}` })
+          .where(eq(products.id, item.productId));
+      }
+      await tx.delete(orderItems).where(eq(orderItems.orderId, id));
+      await tx.delete(orders).where(eq(orders.id, id));
+    });
+  },
   async markEmail(
     id: string,
     result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string },

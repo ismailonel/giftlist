@@ -113,6 +113,12 @@ export async function setOrderStatus(id: string, status: OrderStatus) {
   await store.setOrderStatus(id, status);
 }
 
+export async function releaseOrder(id: string) {
+  const store = backend();
+  if (!store) throw new Error("Falta DATABASE_URL");
+  await store.releaseOrder(id);
+}
+
 export async function markEmail(
   id: string,
   result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string },

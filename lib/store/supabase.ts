@@ -168,6 +168,25 @@ async function seedIfEmpty(supabase: NonNullable<ReturnType<typeof getSupabase>>
   raise(products.error, "products");
 }
 
+async function returnStock(
+  supabase: NonNullable<ReturnType<typeof getSupabase>>,
+  productId: string,
+  quantity: number,
+) {
+  if (!productId || quantity <= 0) return;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const current = await supabase.from("products").select("stock").eq("id", productId).limit(1);
+    raise(current.error, "products");
+    const row = (current.data ?? [])[0] as Row | undefined;
+    if (!row) return;
+    const stock = number(row, "stock");
+    const saved = await supabase.from("products").update({ stock: stock + quantity }).eq("id", productId).eq("stock", stock).select("id");
+    raise(saved.error, "products");
+    if ((saved.data ?? []).length > 0) return;
+  }
+  throw new Error("products: no se pudo devolver el stock");
+}
+
 async function ready() {
   const supabase = client();
   await seedIfEmpty(supabase);
@@ -404,6 +423,20 @@ export const supabaseStore = {
     const supabase = await ready();
     const saved = await supabase.from("orders").update({ status }).eq("id", id);
     raise(saved.error, "orders");
+  },
+  async releaseOrder(id: string) {
+    const supabase = await ready();
+    const items = await supabase.from("order_items").select("product_id, quantity").eq("order_id", id);
+    raise(items.error, "order_items");
+    const removed = await supabase.from("orders").delete().eq("id", id).select("id");
+    raise(removed.error, "orders");
+    if ((removed.data ?? []).length === 0) return;
+
+    for (const item of (items.data ?? []) as Row[]) {
+      await returnStock(supabase, text(item, "product_id"), number(item, "quantity"));
+    }
+    const cleared = await supabase.from("order_items").delete().eq("order_id", id);
+    raise(cleared.error, "order_items");
   },
   async markEmail(
     id: string,

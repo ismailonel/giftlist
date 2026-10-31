@@ -15,18 +15,24 @@ import { ProductVisual } from "./product-visual";
 export function ProductForm({
   product,
   categories,
+  defaultCategoryId,
+  defaultSort,
 }: {
   product: Product | null;
   categories: Category[];
+  defaultCategoryId?: string;
+  defaultSort?: number;
 }) {
   const router = useRouter();
   const [name, setName] = useState(product?.name ?? "");
   const [price, setPrice] = useState(product ? centsToInput(product.priceCents) : "");
   const [stock, setStock] = useState(String(product?.stock ?? 1));
-  const [categoryId, setCategoryId] = useState(product?.categoryId ?? categories[0]?.id ?? "");
+  const [categoryId, setCategoryId] = useState(
+    product?.categoryId ?? defaultCategoryId ?? categories[0]?.id ?? "",
+  );
   const [imageUrl, setImageUrl] = useState(product?.imageUrl ?? "");
   const [amazonUrl, setAmazonUrl] = useState(product?.amazonUrl ?? "");
-  const [sort, setSort] = useState(String(product?.sort ?? 10));
+  const [sort, setSort] = useState(String(product?.sort ?? defaultSort ?? 10));
   const [published, setPublished] = useState(product?.published ?? false);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);

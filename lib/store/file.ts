@@ -159,6 +159,19 @@ export const fileStore = {
       await persist(data);
     });
   },
+  async releaseOrder(id: string) {
+    await locked(async () => {
+      const data = await readData();
+      const order = data.orders.find((entry) => entry.id === id);
+      if (!order) return;
+      for (const item of order.items) {
+        const product = data.products.find((entry) => entry.id === item.productId);
+        if (product) product.stock += item.quantity;
+      }
+      data.orders = data.orders.filter((entry) => entry.id !== id);
+      await persist(data);
+    });
+  },
   async markEmail(id: string, result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string }) {
     await locked(async () => {
       const data = await readData();
