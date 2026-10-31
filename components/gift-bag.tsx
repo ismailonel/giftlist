@@ -111,6 +111,15 @@ export function GiftBag({
                       >
                         +
                       </button>
+                      <button
+                        type="button"
+                        aria-label={`Quitar ${line.name} de la bolsa`}
+                        title="Quitar de la bolsa"
+                        className="ml-auto text-[#8a4b3a] transition-opacity hover:opacity-70"
+                        onClick={() => onQuantity(line.id, 0)}
+                      >
+                        ✕
+                      </button>
                     </div>
                   </div>
                 </li>
