@@ -166,7 +166,7 @@ export function GiftBag({
             <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
             {error ? <p className="text-sm text-[#8a4b3a]">{error}</p> : null}
             <p className="text-xs leading-relaxed text-[#6f675f]">
-              Para completar tu regalo, transfiere el valor indicado a una de nuestras cuentas y confirma aquí abajo; recibe tu mensaje. ¡Gracias por tu cariño!
+              Para completar tu regalo, transfiere el valor indicado a una de nuestras cuentas y confirma aquí abajo para recibir tu mensaje. ¡Gracias por tu cariño!
             </p>
             <button
               type="submit"
