@@ -5,6 +5,7 @@ import { formatQuote } from "@/lib/format";
 import type { CatalogCategory, PublicProduct } from "@/lib/types";
 import { useCurrency } from "./currency-picker";
 import { GiftBag, type BagLine } from "./gift-bag";
+import { ImageLightbox } from "./image-lightbox";
 import { ProductVisual } from "./product-visual";
 
 const storageKey = "giftlist-bolsa";
@@ -47,6 +48,7 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
   const { currency, copPerUsd, hnlPerUsd } = useCurrency();
   const lines = useSyncExternalStore(subscribeBag, getBag, () => emptyBag);
   const [open, setOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ src: string; name: string } | null>(null);
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
   const total = lines.reduce((sum, line) => sum + line.priceCents * line.quantity, 0);
 
@@ -107,9 +109,14 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
                 const line = lines.find((item) => item.id === product.id);
                 return (
                   <article key={product.id} className="flex flex-col items-center text-center">
-                    <div className="aspect-square w-full max-w-36">
+                    <button
+                      type="button"
+                      aria-label={`Ver ${product.name} grande`}
+                      className="aspect-square w-full max-w-36 cursor-zoom-in"
+                      onClick={() => setLightbox({ src: product.imageUrl, name: product.name })}
+                    >
                       <ProductVisual src={product.imageUrl} name={product.name} />
-                    </div>
+                    </button>
                     <h3 className="mt-2 text-[13px] leading-tight">{product.name}</h3>
                     <p className="mt-1 text-xs text-[#8a8178]">
                       {formatQuote(product.priceCents, currency, copPerUsd, hnlPerUsd)}
@@ -180,6 +187,7 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
         }}
         onUnavailable={(ids) => setBag(getBag().filter((line) => !ids.includes(line.id)))}
       />
+      {lightbox ? <ImageLightbox src={lightbox.src} name={lightbox.name} onClose={() => setLightbox(null)} /> : null}
     </>
   );
 }

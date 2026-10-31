@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { confirmGifts } from "@/app/actions";
 import { formatQuote } from "@/lib/format";
 import { useCurrency } from "./currency-picker";
+import { ImageLightbox } from "./image-lightbox";
 import { ProductVisual } from "./product-visual";
 
 export type BagLine = {
@@ -35,6 +36,7 @@ export function GiftBag({
   const { currency, copPerUsd, hnlPerUsd } = useCurrency();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [lightbox, setLightbox] = useState<{ src: string; name: string } | null>(null);
   const total = lines.reduce((sum, line) => sum + line.priceCents * line.quantity, 0);
 
   if (!open) return null;
@@ -66,6 +68,7 @@ export function GiftBag({
   }
 
   return (
+    <>
     <div className="fixed inset-0 z-40 flex justify-end bg-[#2c2926]/30">
       <button className="hidden flex-1 sm:block" type="button" aria-label="Cerrar" onClick={onClose} />
       <div className="flex h-full w-full flex-col bg-[#f7f3ec] shadow-none sm:max-w-md sm:border-l sm:border-[#e4dcd0]">
@@ -82,9 +85,14 @@ export function GiftBag({
             <ul className="space-y-2">
               {lines.map((line) => (
                 <li key={line.id} className="flex gap-3">
-                  <div className="h-12 w-12 shrink-0">
+                  <button
+                    type="button"
+                    aria-label={`Ver ${line.name} grande`}
+                    className="h-12 w-12 shrink-0 cursor-zoom-in"
+                    onClick={() => setLightbox({ src: line.imageUrl, name: line.name })}
+                  >
                     <ProductVisual src={line.imageUrl} name="" />
-                  </div>
+                  </button>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm">{line.name}</p>
                     <p className="text-xs text-[#8a8178]">
@@ -155,5 +163,7 @@ export function GiftBag({
         ) : null}
       </div>
     </div>
+    {lightbox ? <ImageLightbox src={lightbox.src} name={lightbox.name} onClose={() => setLightbox(null)} /> : null}
+    </>
   );
 }
