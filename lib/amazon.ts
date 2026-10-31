@@ -3,7 +3,7 @@ import "server-only";
 import { storeImage } from "./images";
 
 const AMAZON_PAGE =
-  /(^|\.)amazon\.(com|com\.mx|com\.br|es|ca|co\.uk|de|fr|it|nl|in|com\.au|co|cl)$/i;
+  /(^|\.)amazon\.(com|com\.mx|com\.br|com\.tr|com\.sa|com\.eg|es|ca|co\.uk|de|fr|it|nl|in|com\.au|co\.jp|co|cl)$/i;
 
 export type AmazonImport =
   | {
