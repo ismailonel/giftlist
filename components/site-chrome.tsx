@@ -11,11 +11,11 @@ export function SiteHeader({ settings }: { settings: Settings }) {
       <img
         src="/ismailadrian.png"
         alt="Ismail Adrián"
-        width={160}
-        height={160}
-        className="mx-auto w-40 sm:w-44"
+        width={256}
+        height={256}
+        className="mx-auto w-64 sm:w-80"
       />
-      <p className="mt-5 text-[11px] tracking-[0.42em] text-[#6f675f] uppercase">
+      <p className="mt-2 text-[11px] tracking-[0.42em] text-[#6f675f] uppercase">
         {settings.siteName}
       </p>
       <h1 className="mx-auto mt-3 max-w-3xl font-serif text-[2.6rem] leading-[1.05] font-medium tracking-tight text-[#2c2926] sm:text-6xl">
