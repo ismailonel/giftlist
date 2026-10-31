@@ -30,8 +30,7 @@ export default async function ThanksPage({
           <p className="mt-4 text-sm leading-relaxed text-[#6f675f]">
             {order.guestName}, {settings.thanksMessage || "apartamos tu selección."}
           </p>
-          <p className="mt-6 text-[11px] tracking-[0.22em] uppercase">Referencia {order.code}</p>
-          <ul className="mt-4 space-y-1 text-sm">
+          <ul className="mt-6 space-y-1 text-sm">
             {order.items.map((item) => (
               <li key={item.id}>
                 {item.quantity} × {item.name}
