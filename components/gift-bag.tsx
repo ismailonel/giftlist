@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { confirmGifts } from "@/app/actions";
 import { formatQuote } from "@/lib/format";
 import { useCurrency } from "./currency-picker";
+import { CopyNumber } from "./copy-number";
 import { ImageLightbox } from "./image-lightbox";
 import { ProductVisual } from "./product-visual";
 
@@ -133,11 +134,17 @@ export function GiftBag({
               <span className="text-[11px] tracking-[0.22em] uppercase">Total</span>
               <span className="font-serif text-2xl">{formatQuote(total, currency, copPerUsd, hnlPerUsd)}</span>
             </div>
-            <div className="rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-4 py-2 text-sm leading-snug">
+            <div className="space-y-1 rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-4 py-3 text-sm leading-snug">
               <p className="text-[11px] tracking-[0.22em] uppercase text-[#6f675f]">Datos para la transferencia</p>
-              <p className="mt-2">STEPHANIE ARIAS GOMEZ</p>
-              <p>Número de cuenta BAC Honduras: 746395201</p>
-              <p>Número de cuenta Bancolombia: 55171691884</p>
+              <p className="pt-1 font-medium">Titular: STEPHANIE ARIAS GÓMEZ</p>
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 py-1">
+                <span>BAC Honduras <span className="text-xs text-[#8a8178]">(HNL / USD)</span></span>
+                <CopyNumber value="746395201" label="BAC Honduras" />
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-t border-[#e4dcd0] py-1">
+                <span>Bancolombia <span className="text-xs text-[#8a8178]">(COP)</span></span>
+                <CopyNumber value="55171691884" label="Bancolombia" />
+              </div>
             </div>
             <label className="block text-sm">
               Nombre

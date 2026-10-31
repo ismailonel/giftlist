@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { CopyNumber } from "@/components/copy-number";
 import { displayCurrency, formatQuote, formatWhen } from "@/lib/format";
 import { getOrderByCode, getSettings } from "@/lib/store";
 
@@ -40,12 +41,18 @@ export default async function ThanksPage({
           <p className="mt-4 font-serif text-3xl">
             {formatQuote(order.totalCents, currency, settings.copPerUsd, settings.hnlPerUsd)}
           </p>
-          <section className="mt-8 rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-5 py-4 text-left text-sm leading-relaxed">
+          <section className="mt-8 space-y-1 rounded-2xl border border-[#e4dcd0] bg-[#f8f4ee] px-5 py-4 text-left text-sm leading-relaxed">
             <h2 className="text-[11px] tracking-[0.22em] uppercase">Datos para la transferencia</h2>
-            <p className="mt-3">STEPHANIE ARIAS GOMEZ</p>
-            <p>Número de cuenta BAC Honduras: 746395201</p>
-            <p>Número de cuenta Bancolombia: 55171691884</p>
-            <p className="mt-3 text-xs text-[#8a8178]">{formatWhen(order.createdAt)}</p>
+            <p className="pt-2 font-medium">Titular: STEPHANIE ARIAS GÓMEZ</p>
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 py-1">
+              <span>BAC Honduras <span className="text-xs text-[#8a8178]">(HNL / USD)</span></span>
+              <CopyNumber value="746395201" label="BAC Honduras" />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-t border-[#e4dcd0] py-1">
+              <span>Bancolombia <span className="text-xs text-[#8a8178]">(COP)</span></span>
+              <CopyNumber value="55171691884" label="Bancolombia" />
+            </div>
+            <p className="pt-2 text-xs text-[#8a8178]">{formatWhen(order.createdAt)}</p>
           </section>
         </>
       ) : (
