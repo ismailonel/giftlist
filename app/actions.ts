@@ -210,14 +210,6 @@ const settingsSchema = z.object({
   thanksMessage: z.string().trim().max(300),
 });
 
-export async function setDisplayCurrency(formData: FormData) {
-  const moneda = displayCurrency(String(formData.get("moneda") ?? ""));
-  const jar = await cookies();
-  jar.set("giftlist_moneda", moneda, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
-  revalidatePath("/");
-  revalidatePath("/gracias");
-}
-
 export async function saveSettingsAction(formData: FormData) {
   await requireAdmin();
   const parsed = settingsSchema.safeParse({

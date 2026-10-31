@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { CurrencyProvider } from "@/components/currency-picker";
 import { Registry } from "@/components/registry";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { displayCurrency } from "@/lib/format";
@@ -11,15 +12,12 @@ export default async function HomePage() {
   const currency = displayCurrency(jar.get("giftlist_moneda")?.value);
 
   return (
-    <main>
-      <SiteHeader settings={settings} currency={currency} />
-      <Registry
-        catalog={catalog}
-        currency={currency}
-        copPerUsd={settings.copPerUsd}
-        hnlPerUsd={settings.hnlPerUsd}
-      />
-      <SiteFooter settings={settings} />
-    </main>
+    <CurrencyProvider initial={currency} copPerUsd={settings.copPerUsd} hnlPerUsd={settings.hnlPerUsd}>
+      <main>
+        <SiteHeader settings={settings} />
+        <Registry catalog={catalog} />
+        <SiteFooter settings={settings} />
+      </main>
+    </CurrencyProvider>
   );
 }

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { confirmGifts } from "@/app/actions";
-import { formatQuote, type DisplayCurrency } from "@/lib/format";
+import { formatQuote } from "@/lib/format";
+import { useCurrency } from "./currency-picker";
 import { ProductVisual } from "./product-visual";
 
 export type BagLine = {
@@ -18,9 +19,6 @@ export type BagLine = {
 export function GiftBag({
   open,
   lines,
-  currency,
-  copPerUsd,
-  hnlPerUsd,
   onClose,
   onQuantity,
   onClear,
@@ -28,15 +26,13 @@ export function GiftBag({
 }: {
   open: boolean;
   lines: BagLine[];
-  currency: DisplayCurrency;
-  copPerUsd: number;
-  hnlPerUsd: number;
   onClose: () => void;
   onQuantity: (id: string, quantity: number) => void;
   onClear: () => void;
   onUnavailable: (ids: string[]) => void;
 }) {
   const router = useRouter();
+  const { currency, copPerUsd, hnlPerUsd } = useCurrency();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const total = lines.reduce((sum, line) => sum + line.priceCents * line.quantity, 0);

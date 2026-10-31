@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { formatQuote, type DisplayCurrency } from "@/lib/format";
+import { formatQuote } from "@/lib/format";
 import type { CatalogCategory, PublicProduct } from "@/lib/types";
+import { useCurrency } from "./currency-picker";
 import { GiftBag, type BagLine } from "./gift-bag";
 import { ProductVisual } from "./product-visual";
 
@@ -42,17 +43,8 @@ function subscribeBag(onStoreChange: () => void) {
   return () => window.removeEventListener("giftlist-bolsa", onStoreChange);
 }
 
-export function Registry({
-  catalog,
-  currency,
-  copPerUsd,
-  hnlPerUsd,
-}: {
-  catalog: CatalogCategory[];
-  currency: DisplayCurrency;
-  copPerUsd: number;
-  hnlPerUsd: number;
-}) {
+export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
+  const { currency, copPerUsd, hnlPerUsd } = useCurrency();
   const lines = useSyncExternalStore(subscribeBag, getBag, () => emptyBag);
   const [open, setOpen] = useState(false);
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
@@ -180,9 +172,6 @@ export function Registry({
       <GiftBag
         open={open}
         lines={lines}
-        currency={currency}
-        copPerUsd={copPerUsd}
-        hnlPerUsd={hnlPerUsd}
         onClose={() => setOpen(false)}
         onQuantity={setQuantity}
         onClear={() => {
