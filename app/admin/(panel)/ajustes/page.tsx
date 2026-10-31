@@ -17,7 +17,7 @@ export default async function SettingsPage({
     <form action={saveSettingsAction} className="space-y-6">
       <h1 className="font-serif text-4xl">Ajustes</h1>
       {ok ? <p className="text-sm text-[#6f675f]">Guardado.</p> : null}
-      {error ? <p className="text-sm text-[#8a4b3a]">Revisa los campos. El correo, si lo escribes, tiene que ser válido.</p> : null}
+      {error ? <p className="text-sm text-[#8a4b3a]">Revisa los campos.</p> : null}
       <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
         <Field name="monogram" label="Monograma" defaultValue={settings.monogram} />
         <Field name="siteName" label="Nombre del sitio" defaultValue={settings.siteName} />
@@ -25,7 +25,6 @@ export default async function SettingsPage({
         <Field name="subtitle" label="Subtítulo" defaultValue={settings.subtitle} className="sm:col-span-2" />
         <Area name="scriptNote" label="Nota manuscrita" defaultValue={settings.scriptNote} />
         <Field name="footerLine" label="Línea del pie" defaultValue={settings.footerLine} />
-        <Field name="notifyEmail" label="Correo de aviso" defaultValue={settings.notifyEmail} type="email" />
       </section>
       <section className="grid gap-4 rounded-2xl border border-[#e4dcd0] p-4 sm:grid-cols-2">
         <h2 className="font-serif text-2xl sm:col-span-2">Tipo de cambio</h2>
@@ -41,14 +40,6 @@ export default async function SettingsPage({
         <Field name="accountHolder" label="Titular" defaultValue={settings.accountHolder} />
         <Field name="accountNumber" label="Cuenta o IBAN" defaultValue={settings.accountNumber} className="sm:col-span-2" />
         <Area name="bankNote" label="Nota" defaultValue={settings.bankNote} />
-      </section>
-      <section className="space-y-4 rounded-2xl border border-[#e4dcd0] p-4">
-        <h2 className="font-serif text-2xl">Plantillas</h2>
-        <p className="text-xs leading-relaxed text-[#6f675f]">
-          Puedes usar {"{{nombre}}"}, {"{{correo}}"}, {"{{items}}"}, {"{{total}}"}, {"{{mensaje}}"}, {"{{iban}}"}, {"{{banco}}"}, {"{{titular}}"}, {"{{codigo}}"} y {"{{nota}}"}.
-        </p>
-        <Area name="guestTemplate" label="Para quien regala" defaultValue={settings.guestTemplate} rows={12} />
-        <Area name="ownerTemplate" label="Aviso para ustedes" defaultValue={settings.ownerTemplate} rows={10} />
       </section>
       <section className="space-y-4 rounded-2xl border border-[#e4dcd0] p-4">
         <h2 className="font-serif text-2xl">Página de agradecimiento</h2>

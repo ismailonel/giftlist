@@ -1,18 +1,16 @@
 import { notFound } from "next/navigation";
-import { releaseGift, resendGiftEmails, setGiftStatus } from "@/app/actions";
+import { releaseGift, setGiftStatus } from "@/app/actions";
 import { requireAdmin } from "@/lib/auth";
-import { buildEmails } from "@/lib/email";
 import { formatMoney, formatWhen } from "@/lib/format";
-import { getOrder, getSettings } from "@/lib/store";
+import { getOrder } from "@/lib/store";
 
 export const instant = false;
 
 export default async function GiftPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const { id } = await params;
-  const [order, settings] = await Promise.all([getOrder(id), getSettings()]);
+  const order = await getOrder(id);
   if (!order) notFound();
-  const emails = buildEmails(order, settings);
 
   return (
     <div className="space-y-6">
@@ -47,10 +45,6 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
         </label>
         <button className="mt-5 rounded-full border border-[#3f3a34] px-4 py-2 text-sm">Guardar</button>
       </form>
-      {order.emailNote ? <p className="text-sm text-[#8a4b3a]">{order.emailNote}</p> : null}
-      <p className="text-xs text-[#8a8178]">
-        Correo a quien regala: {order.guestEmailSent ? "enviado" : "pendiente"}. Aviso: {order.ownerEmailSent ? "enviado" : "pendiente"}.
-      </p>
       <form action={releaseGift}>
         <input type="hidden" name="id" value={order.id} />
         <button className="rounded-full border border-[#8a4b3a] px-4 py-2 text-sm text-[#8a4b3a]">
@@ -60,17 +54,6 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
           El stock de estos regalos vuelve a la lista y esta reserva se elimina.
         </p>
       </form>
-      <form action={resendGiftEmails}>
-        <input type="hidden" name="id" value={order.id} />
-        <button className="rounded-full bg-[#3f3a34] px-4 py-2 text-sm text-[#f7f3ec]">Reenviar correos</button>
-      </form>
-      <details className="rounded-2xl border border-[#e4dcd0] p-4 text-sm">
-        <summary>Vista previa de los correos</summary>
-        <h2 className="mt-4 font-medium">{emails.guest.subject}</h2>
-        <pre className="mt-2 whitespace-pre-wrap font-sans">{emails.guest.text}</pre>
-        <h2 className="mt-6 font-medium">{emails.owner.subject}</h2>
-        <pre className="mt-2 whitespace-pre-wrap font-sans">{emails.owner.text}</pre>
-      </details>
     </div>
   );
 }

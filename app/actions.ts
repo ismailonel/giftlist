@@ -7,17 +7,14 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { adminPassword, passwordsMatch, requireAdmin } from "@/lib/auth";
 import { importAmazonProduct } from "@/lib/amazon";
-import { deliverEmails } from "@/lib/email";
-import { displayCurrency, dollarsToCents, parseTurkishRate } from "@/lib/format";
+import { dollarsToCents, parseTurkishRate } from "@/lib/format";
 import { storeImage } from "@/lib/images";
 import { SESSION_COOKIE, sessionSecret, signAdminSession } from "@/lib/session";
 import {
   confirmSelection,
   deleteCategory,
   deleteProduct,
-  getOrder,
   getSettings,
-  markEmail,
   saveCategory,
   saveProduct,
   saveSettings,
@@ -67,10 +64,6 @@ export async function confirmGifts(input: {
 
   if (!result.ok) return result;
 
-  const settings = await getSettings();
-  const jar = await cookies();
-  const delivery = await deliverEmails(result.order, settings, displayCurrency(jar.get("giftlist_moneda")?.value));
-  await markEmail(result.order.id, delivery);
   revalidatePath("/");
   revalidatePath("/gracias");
   return { ok: true as const, code: result.order.code };
@@ -200,13 +193,10 @@ const settingsSchema = z.object({
   currency: z.literal("USD"),
   copPerUsd: z.number().positive(),
   hnlPerUsd: z.number().positive(),
-  notifyEmail: z.union([z.literal(""), z.string().trim().email().max(160)]),
   bankName: z.string().trim().max(120),
   accountHolder: z.string().trim().max(120),
   accountNumber: z.string().trim().max(80),
   bankNote: z.string().trim().max(500),
-  guestTemplate: z.string().trim().min(10).max(4000),
-  ownerTemplate: z.string().trim().min(10).max(4000),
   thanksMessage: z.string().trim().max(300),
 });
 
@@ -222,17 +212,22 @@ export async function saveSettingsAction(formData: FormData) {
     currency: "USD",
     copPerUsd: parseTurkishRate(String(formData.get("copPerUsd") ?? "")),
     hnlPerUsd: parseTurkishRate(String(formData.get("hnlPerUsd") ?? "")),
-    notifyEmail: formData.get("notifyEmail"),
     bankName: formData.get("bankName"),
     accountHolder: formData.get("accountHolder"),
     accountNumber: formData.get("accountNumber"),
     bankNote: formData.get("bankNote"),
-    guestTemplate: formData.get("guestTemplate"),
-    ownerTemplate: formData.get("ownerTemplate"),
     thanksMessage: formData.get("thanksMessage"),
   });
   if (!parsed.success) redirect("/admin/ajustes?error=1");
-  const settings: Settings = parsed.data;
+  // Las columnas de correo siguen siendo NOT NULL en la base de datos,
+  // por lo que conservamos los valores actuales en lugar de escribirlos.
+  const current = await getSettings();
+  const settings: Settings = {
+    ...parsed.data,
+    notifyEmail: current.notifyEmail,
+    guestTemplate: current.guestTemplate,
+    ownerTemplate: current.ownerTemplate,
+  };
   await saveSettings(settings);
   revalidatePath("/");
   revalidatePath("/admin/ajustes");
@@ -257,16 +252,5 @@ export async function setGiftStatus(formData: FormData) {
   if (status !== "pendiente" && status !== "recibido") return;
   await setOrderStatus(id, status as OrderStatus);
   revalidatePath("/admin/regalos");
-  revalidatePath(`/admin/regalos/${id}`);
-}
-
-export async function resendGiftEmails(formData: FormData) {
-  await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  const order = await getOrder(id);
-  if (!order) redirect("/admin/regalos");
-  const settings = await getSettings();
-  const delivery = await deliverEmails(order, settings);
-  await markEmail(id, delivery);
   revalidatePath(`/admin/regalos/${id}`);
 }

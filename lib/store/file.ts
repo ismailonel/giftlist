@@ -179,17 +179,6 @@ export const fileStore = {
       await persist(data);
     });
   },
-  async markEmail(id: string, result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string }) {
-    await locked(async () => {
-      const data = await readData();
-      const order = data.orders.find((entry) => entry.id === id);
-      if (!order) return;
-      order.guestEmailSent = result.guestEmailSent;
-      order.ownerEmailSent = result.ownerEmailSent;
-      order.emailNote = result.emailNote;
-      await persist(data);
-    });
-  },
 };
 
 function createOrder(

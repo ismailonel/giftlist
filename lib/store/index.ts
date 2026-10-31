@@ -119,11 +119,3 @@ export async function releaseOrder(id: string) {
   await store.releaseOrder(id);
 }
 
-export async function markEmail(
-  id: string,
-  result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string },
-) {
-  const store = backend();
-  if (!store) return;
-  await store.markEmail(id, result);
-}

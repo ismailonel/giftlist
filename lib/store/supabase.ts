@@ -443,19 +443,4 @@ export const supabaseStore = {
     const cleared = await supabase.from("order_items").delete().eq("order_id", id);
     raise(cleared.error, "order_items");
   },
-  async markEmail(
-    id: string,
-    result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string },
-  ) {
-    const supabase = await ready();
-    const saved = await supabase
-      .from("orders")
-      .update({
-        guest_email_sent: result.guestEmailSent,
-        owner_email_sent: result.ownerEmailSent,
-        email_note: result.emailNote,
-      })
-      .eq("id", id);
-    raise(saved.error, "orders");
-  },
 };

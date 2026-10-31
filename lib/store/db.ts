@@ -257,20 +257,6 @@ export const dbStore = {
       await tx.delete(orders).where(eq(orders.id, id));
     });
   },
-  async markEmail(
-    id: string,
-    result: { guestEmailSent: boolean; ownerEmailSent: boolean; emailNote: string },
-  ) {
-    const database = await db();
-    await database
-      .update(orders)
-      .set({
-        guestEmailSent: result.guestEmailSent,
-        ownerEmailSent: result.ownerEmailSent,
-        emailNote: result.emailNote,
-      })
-      .where(eq(orders.id, id));
-  },
 };
 
 function settingsRow(value: Settings) {
