@@ -23,6 +23,9 @@ export function getSql() {
     globalForDb.giftlistSql = postgres(url, {
       ssl: local ? false : "require",
       max: 1,
+      connect_timeout: 10,
+      idle_timeout: 30,
+      max_lifetime: 120,
     });
   }
   return globalForDb.giftlistSql;
