@@ -20,12 +20,14 @@ export function getSql() {
   if (!url) return null;
   if (!globalForDb.giftlistSql) {
     const local = /localhost|127\.0\.0\.1/.test(url);
+    const pooler = /pooler\.supabase\.com|:6543\b|pgbouncer=true/i.test(url);
     globalForDb.giftlistSql = postgres(url, {
       ssl: local ? false : "require",
       max: 1,
       connect_timeout: 10,
       idle_timeout: 30,
       max_lifetime: 120,
+      prepare: !pooler,
     });
   }
   return globalForDb.giftlistSql;
