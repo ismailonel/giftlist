@@ -117,12 +117,12 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
                     >
                       <ProductVisual src={product.imageUrl} name={product.name} />
                     </button>
-                    <h3 className="mt-2 text-[13px] leading-tight">{product.name}</h3>
+                    <h3 className="mt-2 line-clamp-2 min-h-[2.5em] text-[13px] leading-tight">{product.name}</h3>
                     <p className="mt-1 text-xs text-[#8a8178]">
                       {formatQuote(product.priceCents, currency, copPerUsd, hnlPerUsd)}
                     </p>
                     {line ? (
-                      <div className="mt-2 flex items-center gap-3 text-sm">
+                      <div className="mt-auto flex items-center gap-3 pt-2 text-sm">
                         <button type="button" aria-label={`Quitar un ${product.name}`} onClick={() => setQuantity(product.id, line.quantity - 1)}>
                           −
                         </button>
@@ -137,13 +137,15 @@ export function Registry({ catalog }: { catalog: CatalogCategory[] }) {
                         </button>
                       </div>
                     ) : (
-                      <button
-                        type="button"
-                        className="mt-2 max-w-36 rounded-full bg-[#3f3a34] px-4 py-2 text-[11px] leading-snug tracking-wide text-[#f7f3ec] transition-opacity hover:opacity-85"
-                        onClick={() => add(product)}
-                      >
-                        Agregar
-                      </button>
+                      <div className="mt-auto w-full pt-2">
+                        <button
+                          type="button"
+                          className="mx-auto block w-full rounded-full bg-[#3f3a34] px-4 py-2 text-[11px] leading-snug tracking-wide text-[#f7f3ec] transition-opacity hover:opacity-85"
+                          onClick={() => add(product)}
+                        >
+                          Agregar
+                        </button>
+                      </div>
                     )}
                   </article>
                 );
